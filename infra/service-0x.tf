@@ -73,11 +73,11 @@ module "task-0x-mesh-bootstrap" {
     },
     {
       name : "P2P_ADVERTISE_ADDRS",
-      value : "/dns4/${var.environment}.${var.domain}/tcp/${local.bootstrap_ports[1]}/ws/ipfs/${var.ipfs_pubkey}"
+      value : "/dns4/${var.environment}-bootstrap.${var.domain}/tcp/${local.bootstrap_ports[1]}/wss/ipfs/${var.ipfs_pubkey}"
     },
     {
       name : "P2P_BIND_ADDRS",
-      value : "/ip4/0.0.0.0/tcp/${local.bootstrap_ports[0]},/ip4/0.0.0.0/tcp/${local.bootstrap_ports[1]}/ws"
+      value : "/ip4/0.0.0.0/tcp/${local.bootstrap_ports[0]},/ip4/0.0.0.0/tcp/${local.bootstrap_ports[1]}/wss"
     },
     {
       name : "PRIVATE_KEY",
@@ -131,7 +131,7 @@ module "task-0x-mesh-rpc" {
     },
     {
       name : "BOOTSTRAP_LIST",
-      value : "/dns4/${local.bootstrap_name}.${var.environment}/tcp/60558/ipfs/${var.ipfs_pubkey},/dns4/${local.bootstrap_name}.${var.environment}/tcp/60559/ws/ipfs/${var.ipfs_pubkey}"
+      value : "/dns4/${local.bootstrap_name}.${var.environment}/tcp/60558/ipfs/${var.ipfs_pubkey},/dns4/${local.bootstrap_name}.${var.environment}/tcp/60559/wss/ipfs/${var.ipfs_pubkey}"
     },
     {
       name : "BLOCK_POLLING_INTERVAL"
@@ -194,7 +194,7 @@ module "service-0x-mesh-bootstrap" {
       container_name   = local.bootstrap_name
       container_port   = local.bootstrap_ports[1]
       elb_name         = null
-      target_group_arn = module.alb.target_group_arns[2]
+      target_group_arn = module.ingress-0x-mesh-bootstrap.target_group_arn
     }
   ]
   desired_count = 1

@@ -51,6 +51,8 @@ module "gnosis-security-group" {
   ]
 }
 
+
+
 /* Tasks */
 module "task-gnosis-web" {
   source           = "git::https://github.com/cloudposse/terraform-aws-ecs-container-definition.git?ref=tags/0.23.0"
@@ -78,7 +80,7 @@ module "task-gnosis-web" {
   environment = [
     {
       name : "ALLOWED_HOSTS",
-      value : "gnosis.${var.environment}.augur.net"
+      value : "*"
     },
     {
       name : "C_FORCE_ROOT",
@@ -394,7 +396,6 @@ module "service-gnosis-web" {
   stage                          = var.environment
   name                           = local.web_name
   alb_security_group             = module.alb_security_group.this_security_group_id
-  use_alb_security_group         = true
   container_definition_json      = module.task-gnosis-web.json
   ignore_changes_task_definition = false
   ecs_cluster_arn                = aws_ecs_cluster.ecs.arn
@@ -437,7 +438,6 @@ module "service-gnosis-postgres" {
   stage                          = var.environment
   name                           = local.postgres_name
   alb_security_group             = module.alb_security_group.this_security_group_id
-  use_alb_security_group         = true
   container_definition_json      = module.task-gnosis-postgres.json
   ignore_changes_task_definition = false
   ecs_cluster_arn                = aws_ecs_cluster.ecs.arn
@@ -473,7 +473,6 @@ module "service-gnosis-redis" {
   name                           = local.redis_name
   alb_security_group             = module.alb_security_group.this_security_group_id
   container_definition_json      = module.task-gnosis-redis.json
-  use_alb_security_group         = true
   ignore_changes_task_definition = false
   ecs_cluster_arn                = aws_ecs_cluster.ecs.arn
   launch_type                    = "FARGATE"
@@ -507,7 +506,6 @@ module "service-gnosis-worker" {
   stage                          = var.environment
   name                           = local.worker_name
   alb_security_group             = module.alb_security_group.this_security_group_id
-  use_alb_security_group         = true
   container_definition_json      = module.task-gnosis-worker.json
   ignore_changes_task_definition = false
   ecs_cluster_arn                = aws_ecs_cluster.ecs.arn
@@ -542,7 +540,6 @@ module "service-gnosis-scheduler" {
   stage                          = var.environment
   name                           = local.scheduler_name
   alb_security_group             = module.alb_security_group.this_security_group_id
-  use_alb_security_group         = true
   container_definition_json      = module.task-gnosis-scheduler.json
   ignore_changes_task_definition = false
   ecs_cluster_arn                = aws_ecs_cluster.ecs.arn
